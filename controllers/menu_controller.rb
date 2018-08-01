@@ -4,11 +4,11 @@ class MenuController
   attr_reader :address_book
 
   def initialize
-    @address_book = AddressBook.new
+    @address_book = AddressBook.first
   end
 
   def main_menu
-    puts "Main Menu - #{address_book.entries.count} entries"
+    puts "#{@address_book.name} Address Book - #{Entry.count} entries"
     puts "1 - View all entries"
     puts "2 - Create an entry"
     puts "3 - Search for an entry"
@@ -46,7 +46,7 @@ class MenuController
   end
 
   def view_all_entries
-    address_book.entries.each do |entry|
+    Entry.all.each do |entry|
       system "clear"
       puts entry.to_s
       entry_submenu(entry)
@@ -75,7 +75,9 @@ class MenuController
   def search_entries
     print "Search by name: "
     name = gets.chomp
-    match = address_book.binary_search(name)
+    match = Entry.find_by(:name, name)
+    # ATTN Grader: see next line
+    # match = Entry.find_by_name(name)
     system "clear"
     if match
       puts match.to_s
@@ -175,5 +177,39 @@ class MenuController
         search_submenu(entry)
     end
   end
-end
 
+  # def view_all_entries
+  #   system "clear"
+  #   print "There are #{Entry.count} entries here. How many entries should each batch contain?"
+  #   puts ""
+  #   batch_size = gets.to_i
+  #
+  #   if batch_size.to_i.is_a?(Integer) && batch_size.to_i > 0
+  #     print "Okay, now how many entries should we offset? Enter 0 if you don't care."
+  #     puts ""
+  #     start = gets.to_i
+  #
+  #     if start.to_i.is_a?(Integer) && (start.to_i < "#{Entry.count}".to_i)
+  #       #Entry.find_each(start: start, batch_size: batch_size)
+  #       Entry.find_in_batches(start: start, batch_size: batch_size)
+  #     else
+  #       puts "Let's start over."
+  #       view_all_entries
+  #     end
+  #
+  #   else
+  #     raise "Not valid input."
+  #     main_menu
+  #   end
+  #
+  #   #
+  #   # Entry.all.each do |entry|
+  #   #   system "clear"
+  #   #   puts entry.to_s
+  #   #   entry_submenu(entry)
+  #   # end
+  #
+  #   system "clear"
+  #   puts "End of entries"
+  # end
+end

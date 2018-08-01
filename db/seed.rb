@@ -11,3 +11,6 @@ require_relative '../models/address_book'
  puts Entry.create(address_book_id: book.id, name: 'Foo One', phone_number: '999-999-9999', email: 'foo_one@gmail.com' )
  puts Entry.create(address_book_id: book.id, name: 'Foo Two', phone_number: '111-111-1111', email: 'foo_two@gmail.com' )
  puts Entry.create(address_book_id: book.id, name: 'Foo Three', phone_number: '222-222-2222', email: 'foo_three@gmail.com' )
+ puts Entry.create(address_book_id: book.id, name: 'Foo Four', phone_number: '333-333-3333', email: 'foo_four@gmail.com' )
+ puts Entry.create(address_book_id: book.id, name: 'Foo Five', phone_number: '444-444-4444', email: 'foo_five@gmail.com' )
+ puts Entry.create(address_book_id: book.id, name: 'Foo Six', phone_number: '555-555-5555', email: 'foo_six@gmail.com' )
