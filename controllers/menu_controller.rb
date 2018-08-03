@@ -14,6 +14,8 @@ class MenuController
     puts "3 - Search for an entry"
     puts "4 - Import entries from a CSV"
     puts "5 - Exit"
+    puts "6 - Find in batches"
+    puts "7 - Find each"
     print "Enter your selection: "
 
     selection = gets.to_i
@@ -38,6 +40,14 @@ class MenuController
       when 5
         puts "Good-bye!"
         exit(0)
+      when 6
+        system "clear"
+        search_in_batches
+        main_menu
+      when 7
+        system "clear"
+        search_each
+        main_menu
       else
         system "clear"
         puts "Sorry, that is not a valid input"
@@ -85,6 +95,32 @@ class MenuController
     else
       puts "No match found for #{name}"
     end
+  end
+
+  def search_in_batches
+    print "Which entry should I start at?"
+    start = gets.chomp
+    print "What is the bach size?"
+    batch_size = gets.chomp
+
+    Entry.find_in_batches(start: start, batch_size: batch_size) do |entries, batch|
+      entries.each { |entry| yield entry }
+    end
+
+    go_back
+  end
+
+  def search_each
+    print "Which entry should I start at?"
+    start = gets.chomp
+    print "What is the bach size?"
+    batch_size = gets.chomp
+
+    Entry.find_each(:start => start, :batch_size => batch_size) do |entry|
+      yield entry
+    end
+
+    go_back
   end
 
   def read_csv
@@ -175,6 +211,17 @@ class MenuController
         puts "#{selection} is not a valid input"
         puts entry.to_s
         search_submenu(entry)
+    end
+  end
+
+  def go_back
+    puts "m - return to main menu"
+    selection = gets.chomp
+
+    case selection
+      when "m"
+        system "clear"
+        main_menu
     end
   end
 
