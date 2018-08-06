@@ -8,7 +8,8 @@ class MenuController
   end
 
   def main_menu
-    puts "#{@address_book.name} Address Book - #{Entry.count} entries"
+    puts "#{@address_book.name} Address Book Selected\n#{@address_book.entries.count} entries"
+    puts "0 - Switch AddressBook"
     puts "1 - View all entries"
     puts "2 - Create an entry"
     puts "3 - Search for an entry"
@@ -21,6 +22,10 @@ class MenuController
     selection = gets.to_i
 
     case selection
+      when 0
+        system "clear"
+        select_address_book_menu
+        main_menu
       when 1
         system "clear"
         view_all_entries
@@ -55,15 +60,43 @@ class MenuController
     end
   end
 
+  def select_address_book_menu
+    puts "Select an Address Book:"
+    AddressBook.all.each_with_index do |address_book, index|
+      puts "#{index} - #{address_book.name}"
+    end
+
+    index = gets.chomp.to_i
+
+    @address_book = AddressBook.find(index + 1)
+    system "clear"
+    return if @address_book
+    puts "Please select a valid index"
+    select_address_book_menu
+  end
+
   def view_all_entries
-    Entry.all.each do |entry|
+    puts "How do you wanted them sorted? You can choose from these:"
+    puts "#{Entry.columns.to_a}"
+    selection = gets.chomp
+
+    # temporary storage
+    old_address_book = @address_book
+
+    @address_book = Entry.order(selection)
+
+    @address_book.entries.each do |entry|
       system "clear"
       puts entry.to_s
       entry_submenu(entry)
     end
 
+    # reset address_book back to its presorted version
+    @address_book = old_address_book
+
     system "clear"
     puts "End of entries"
+    main_menu
   end
 
   def create_entry
@@ -85,7 +118,11 @@ class MenuController
   def search_entries
     print "Search by name: "
     name = gets.chomp
-    match = Entry.find_by(:name, name)
+
+    match = @address_book.find_entry(name)
+
+    # keep next line for select methods checkpoint
+    # match = Entry.find_by(:name, name)
     # ATTN Grader: see next line
     # match = Entry.find_by_name(name)
     system "clear"
