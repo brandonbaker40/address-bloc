@@ -17,6 +17,7 @@ class MenuController
     puts "5 - Exit"
     puts "6 - Find in batches"
     puts "7 - Find each"
+    puts "8 - Bulk edit entries"
     print "Enter your selection: "
 
     selection = gets.to_i
@@ -52,6 +53,10 @@ class MenuController
       when 7
         system "clear"
         search_each
+        main_menu
+      when 8
+        system "clear"
+        bulk_edit_entries
         main_menu
       else
         system "clear"
@@ -230,6 +235,47 @@ class MenuController
     search_submenu(entry)
   end
 
+  def bulk_edit_entries
+    puts "Make updates to all records?"
+    ids = gets.chomp
+
+    # ids = ids.split(",").map(&:to_i)
+    updates = {}
+
+    print "What should be the value of name for all entries? If not, leave blank."
+    name = gets.chomp
+    updates[:name] = name unless name.empty?
+
+    print "What should be the value of phone number for all entries? If not, leave blank."
+    phone_number = gets.chomp
+    updates[:phone_number] = phone_number unless phone_number.empty?
+
+    print "What should be the value of email for all entries? If not, leave blank."
+    email = gets.chomp
+    updates[:email] = email unless email.empty?
+
+    # My attempt to update just some records, not all of them! Grrrr...
+
+    # Entry.columns.each do |column|
+    #   if (column != "id") && (column != "address_book_id")
+    #     print "What should be the value for \"#{column}\" for these ids #{ids}?"
+    #     column = gets.chomp
+    #     updates[:column] = column unless column.empty?
+    #     print "#{updates[:column]} is getting updated"
+    #   end
+    # end
+
+    # Entry.count.times do |id, updates|
+    #   if ids.include? id.to_s
+    #     Entry.update(id, updates)
+    #   end
+    # end
+
+    Entry.update(ids, updates)
+    system "clear"
+    main_menu
+  end
+
   def search_submenu(entry)
     puts "\nd - delete entry"
     puts "e - edit this entry"
@@ -267,38 +313,4 @@ class MenuController
     end
   end
 
-  # def view_all_entries
-  #   system "clear"
-  #   print "There are #{Entry.count} entries here. How many entries should each batch contain?"
-  #   puts ""
-  #   batch_size = gets.to_i
-  #
-  #   if batch_size.to_i.is_a?(Integer) && batch_size.to_i > 0
-  #     print "Okay, now how many entries should we offset? Enter 0 if you don't care."
-  #     puts ""
-  #     start = gets.to_i
-  #
-  #     if start.to_i.is_a?(Integer) && (start.to_i < "#{Entry.count}".to_i)
-  #       #Entry.find_each(start: start, batch_size: batch_size)
-  #       Entry.find_in_batches(start: start, batch_size: batch_size)
-  #     else
-  #       puts "Let's start over."
-  #       view_all_entries
-  #     end
-  #
-  #   else
-  #     raise "Not valid input."
-  #     main_menu
-  #   end
-  #
-  #   #
-  #   # Entry.all.each do |entry|
-  #   #   system "clear"
-  #   #   puts entry.to_s
-  #   #   entry_submenu(entry)
-  #   # end
-  #
-  #   system "clear"
-  #   puts "End of entries"
-  # end
 end
