@@ -18,6 +18,7 @@ class MenuController
     puts "6 - Find in batches"
     puts "7 - Find each"
     puts "8 - Bulk edit entries"
+    puts "9 - Destroy all of it!!!"
     print "Enter your selection: "
 
     selection = gets.to_i
@@ -57,6 +58,10 @@ class MenuController
       when 8
         system "clear"
         bulk_edit_entries
+        main_menu
+      when 9
+        system "clear"
+        destroy_everything
         main_menu
       else
         system "clear"
@@ -211,7 +216,7 @@ class MenuController
   end
 
   def delete_entry(entry)
-    address_book.entries.delete(entry)
+    entry.destroy
     puts "#{entry.name} has been deleted"
   end
 
@@ -272,6 +277,15 @@ class MenuController
     # end
 
     Entry.update(ids, updates)
+    system "clear"
+    main_menu
+  end
+
+  def destroy_everything
+    puts "Which ids are we going to get rid of? Don't put anything if you want to erase everything."
+    ids = gets.chomp
+
+    Entry.destroy_all(ids)
     system "clear"
     main_menu
   end
